@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/network")]
     [ApiController]
     public class NetworkController : ControllerBase
     {
