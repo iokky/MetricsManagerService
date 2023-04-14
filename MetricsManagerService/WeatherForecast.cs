@@ -11,3 +11,5 @@ namespace MetricsManagerService
         public string? Summary { get; set; }
     }
 }
+
+
