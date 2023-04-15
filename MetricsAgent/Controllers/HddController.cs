@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsAgent.Controllers;
 
@@ -7,6 +6,6 @@ namespace MetricsAgent.Controllers;
 [ApiController]
 public class HddController : ControllerBase
 {
-    [HttpGet("from/{fromTime}/to/{toTime}")]
+    [HttpGet("left/from/{fromTime}/to/{toTime}")]
     public IActionResult GetHddMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) => Ok();
 }
