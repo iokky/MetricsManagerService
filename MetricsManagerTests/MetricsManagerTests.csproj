@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MetricsManagerService\MetricsManagerService.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -16,7 +16,7 @@ public class AgentsController : ControllerBase
     }
 
     [HttpGet("all")]
-    public IEnumerable<Agent> GetAll() => _pools.GetAll();
+    public IActionResult GetAll() => Ok(_pools.GetAll());
 
     [HttpPost("add")]
     public IActionResult AgentRegister([FromBody]Agent agent)
@@ -38,7 +38,7 @@ public class AgentsController : ControllerBase
     {
         var msg = _pools.Enable(agentId);
         if (msg == "|agent enabled|") return Ok(msg); 
-        else return BadRequest(_pools.Enable(agentId)); 
+        else return BadRequest(msg); 
     }
 
     [HttpPut("disable/{agentId}")]
@@ -46,6 +46,6 @@ public class AgentsController : ControllerBase
     {
         var msg = _pools.Disable(agentId);
         if (msg == "|agent disabled|") return Ok(msg); 
-        else return BadRequest(_pools.Disable(agentId)); 
+        else return BadRequest(msg); 
     }
 }
