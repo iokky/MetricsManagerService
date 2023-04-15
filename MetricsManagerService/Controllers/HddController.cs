@@ -7,5 +7,10 @@ namespace MetricsManagerService.Controllers
     [ApiController]
     public class HddController : ControllerBase
     {
+        [HttpGet("agent/{agentId}/left")]
+        public IActionResult GetMetricsFromAgent([FromRoute] int agentId) => Ok();
+
+        [HttpGet("cluster/left")]
+        public IActionResult GetMetricsFromAllCluster() => Ok();
     }
 }
