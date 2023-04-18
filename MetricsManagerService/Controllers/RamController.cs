@@ -8,10 +8,10 @@ namespace MetricsManagerService.Controllers;
 public class RamController : ControllerBase
 {
 
-    [HttpGet("agent/{agentId}/available")]
-    public IActionResult GetMetricsFromAgent([FromRoute] int agentId) => Ok();
+    [HttpGet("agent/{agentId}/available/from/{fromTime}/to/{toTime}")]
+    public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) => Ok();
 
     [HttpGet("cluster/available")]
-    public IActionResult GetMetricsFromAllCluster() => Ok();
+    public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTim) => Ok();
 
 }

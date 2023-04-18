@@ -8,4 +8,5 @@ public class CpuController : ControllerBase
 {
     [HttpGet("from/{fromTime}/to/{toTime}")]
     public IActionResult GetCpuMetric([FromRoute]TimeSpan fromTime, [FromRoute]TimeSpan toTime) => Ok();
+   
 }

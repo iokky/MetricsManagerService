@@ -1,6 +1,5 @@
 ﻿using MetricsManagerService.Models;
 using MetricsManagerService.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerService.Controllers;
