@@ -1,3 +1,4 @@
+using MetricsManagerService.Models;
 using MetricsManagerService.Services;
 using Microsoft.OpenApi.Any;
 using System.ComponentModel;
@@ -18,7 +19,10 @@ builder.Services.AddSwaggerGen(options =>
     })
 );
 
-builder.Services.AddSingleton<AgentsPool>();
+builder.Services.AddSingleton<IRepository<Agent>, AgentsPool>();
+
+
+
 
 var app = builder.Build();
 

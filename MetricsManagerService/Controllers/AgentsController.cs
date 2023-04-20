@@ -8,8 +8,8 @@ namespace MetricsManagerService.Controllers;
 [ApiController]
 public class AgentsController : ControllerBase
 {
-    private readonly AgentsPool _pools;
-    public AgentsController(AgentsPool pool)
+    private readonly IRepository<IEntity> _pools;
+    public AgentsController(IRepository<IEntity> pool)
     {
         _pools = pool;
     }
