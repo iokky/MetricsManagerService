@@ -21,8 +21,8 @@ namespace MetricsAgent.Repositories.DotNetRepository
         public void Delete(int id)
         {
             _db.Remove(
-         _db.dotNetMetrics.First(i => i.Id == id)
-     );
+                _db.dotNetMetrics.First(i => i.Id == id)
+            );
         }
 
         public IList<DotNetMetrics> GetAll()
@@ -37,12 +37,12 @@ namespace MetricsAgent.Repositories.DotNetRepository
 
         public IList<DotNetMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
         {
-            return _db.dotNetMetrics.Where(i => Convert.ToInt32(i.Time) >= Convert.ToInt32(fromTime)).ToList();
+            return _db.dotNetMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
         }
 
         public void Update(DotNetMetrics item)
         {
-            throw new NotImplementedException();
+            _db.Update(item);
         }
     }
 }

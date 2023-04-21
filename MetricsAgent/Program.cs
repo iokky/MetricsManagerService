@@ -8,6 +8,9 @@ using MetricsAgent;
 using MetricsAgent.Logger;
 using NLog;
 using MetricsAgent.Repositories.DotNetRepository;
+using MetricsAgent.Repositories.HddRepository;
+using MetricsAgent.Repositories.NetworkRepository;
+using MetricsAgent.Repositories.RamRepository;
 
 internal class Program
 {
@@ -47,6 +50,9 @@ internal class Program
 
         builder.Services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
         builder.Services.AddScoped<IDotNetMetricsRepository, DotNetRepository>();
+        builder.Services.AddScoped<IHddRepository, HddRepository>();
+        builder.Services.AddScoped<INetworkRepository, NetworkRepository>();
+        builder.Services.AddScoped<IRamRepository, RamRepository>();
 
 
         builder.Services.AddScoped<IAgentLogger, AgentLogger>();

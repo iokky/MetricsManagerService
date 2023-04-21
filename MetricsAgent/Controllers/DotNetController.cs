@@ -25,6 +25,7 @@ public class DotNetController : ControllerBase
     public IActionResult GetDotNetMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
     {
         var response = new AllDotNetMetricsResponse() { DotNetMetrics = _repository.GetByRange(fromTime, toTime).ToList() };
+        _logger?.LogDebug($"|DOTNET| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
 
@@ -34,21 +35,20 @@ public class DotNetController : ControllerBase
         var dotNetMetric = new DotNetMetrics()
         {
             Value = request.Value,
-            Time = request.Time
+            Time = request.Time.TotalSeconds
         };
 
         _repository.Create(dotNetMetric);
 
-        _logger?.LogDebug($"Успешно добавили новую dotNet метрику: {dotNetMetric}");
+        _logger?.LogDebug($"|DOTNET| Успешно добавили новую dotNet метрику: {dotNetMetric}");
         return Ok();
     }
 
     [HttpGet("all")]
     public IActionResult GetAll()
     {
-        //var response = new AllCpuMetricsResponse() { CpuMetrics = _repository.GetAll().ToList() };
-        var response = "ok";
-        _logger?.LogDebug("Все записи метрик получены");
+        var response = new AllDotNetMetricsResponse() { DotNetMetrics = _repository.GetAll().ToList() };
+        _logger?.LogDebug("|DOTNET| Все записи метрик получены");
         return Ok(response);
     }
 }

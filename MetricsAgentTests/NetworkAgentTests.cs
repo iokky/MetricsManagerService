@@ -8,7 +8,7 @@ public class NetworkAgentTests
     private NetworkController _networkController;
     public NetworkAgentTests()
     {
-        _networkController = new NetworkController();
+        //_networkController = new NetworkController();
     }
 
     [Fact]

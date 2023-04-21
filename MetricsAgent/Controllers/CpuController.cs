@@ -25,7 +25,7 @@ public class CpuController : ControllerBase
     public IActionResult GetCpuMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
         var response = new AllCpuMetricsResponse() { CpuMetrics = _repository.GetByRange(fromTime, toTime).ToList() };
-        _logger?.LogDebug($"Записи метрик с {fromTime} оп {toTime} получены");
+        _logger?.LogDebug($"|CPU| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
 
@@ -40,7 +40,7 @@ public class CpuController : ControllerBase
 
         _repository.Create(cpuMetric);
 
-        _logger?.LogDebug($"Успешно добавили новую cpu метрику: {cpuMetric}");
+        _logger?.LogDebug($"|CPU| Успешно добавили новую cpu метрику: {cpuMetric}");
         return Ok();
     }
 
@@ -49,7 +49,7 @@ public class CpuController : ControllerBase
     {
         var response = new AllCpuMetricsResponse() { CpuMetrics = _repository.GetAll().ToList() };
 
-        _logger?.LogDebug("Все записи метрик получены");
+        _logger?.LogDebug("|CPU| Все записи метрик получены");
         return Ok(response);
     }
    

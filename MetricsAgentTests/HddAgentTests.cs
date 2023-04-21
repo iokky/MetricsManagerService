@@ -9,7 +9,7 @@ public class HddAgentTests
 
     public HddAgentTests()
     {
-        _hddController = new HddController();
+       // _hddController = new HddController();
     }
 
     [Fact]
