@@ -1,5 +1,5 @@
 ﻿using MetricsManagerService.Models;
-
+using MetricsManagerService.Repositories;
 
 namespace MetricsManagerService.Services;
 

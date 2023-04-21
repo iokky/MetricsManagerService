@@ -1,4 +1,5 @@
 using MetricsManagerService.Models;
+using MetricsManagerService.Repositories;
 using MetricsManagerService.Services;
 using Microsoft.OpenApi.Any;
 using System.ComponentModel;

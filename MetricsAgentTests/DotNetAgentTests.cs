@@ -9,7 +9,7 @@ public class DotNetAgentTests
 
     public DotNetAgentTests()
     {
-        _dotNetController = new DotNetController();
+        //_dotNetController = new DotNetController();
     }
 
     [Fact]

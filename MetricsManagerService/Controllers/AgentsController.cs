@@ -1,5 +1,5 @@
 ﻿using MetricsManagerService.Models;
-using MetricsManagerService.Services;
+using MetricsManagerService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerService.Controllers;
@@ -8,8 +8,8 @@ namespace MetricsManagerService.Controllers;
 [ApiController]
 public class AgentsController : ControllerBase
 {
-    private readonly IRepository<IEntity> _pools;
-    public AgentsController(IRepository<IEntity> pool)
+    private readonly IRepository<Agent> _pools;
+    public AgentsController(IRepository<Agent> pool)
     {
         _pools = pool;
     }
