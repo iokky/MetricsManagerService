@@ -1,7 +1,7 @@
 ﻿using MetricsAgent.Logger;
 using MetricsAgent.Models;
+using MetricsAgent.Models.Dto;
 using MetricsAgent.Models.Requests;
-using MetricsAgent.Repositories.NetworkRepository;
 using MetricsAgent.Repositories.RamRepository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +23,16 @@ public class RamController : ControllerBase
     [HttpGet("available/from/{fromTime}/to/{toTime}")]
     public IActionResult GetRamMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
-        var response = new AllRamMetricsResponse() { RamMetrics = _repository.GetByRange(fromTime, toTime).ToList() };
+        var response = new AllRamMetricsResponse() { RamMetrics = new List<RamMetricsDto>()};
+        foreach (var metric in _repository.GetByRange(fromTime, toTime))
+        {
+            response.RamMetrics.Add(new RamMetricsDto() 
+            {
+                Id = metric.Id,
+                Value = metric.Value,
+                Time = TimeSpan.FromSeconds(metric.Time),
+            });
+        }
         _logger?.LogDebug($"|RAM| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
@@ -42,11 +51,20 @@ public class RamController : ControllerBase
         _logger?.LogDebug($"|RAM| Успешно добавили новую dotNet метрику: {ramNetMetric}");
         return Ok();
     }
-
+    
     [HttpGet("all")]
     public IActionResult GetAll()
     {
-        var response = new AllRamMetricsResponse() { RamMetrics = _repository.GetAll().ToList() };
+        var response = new AllRamMetricsResponse() { RamMetrics = new List<RamMetricsDto>()};
+        foreach (var metric in _repository.GetAll())
+        {
+            response.RamMetrics.Add(new RamMetricsDto()
+            {
+                Id = metric.Id,
+                Value = metric.Value,
+                Time = TimeSpan.FromSeconds(metric.Time),
+            });
+        }
         _logger?.LogDebug("|RAM| Все записи метрик получены");
         return Ok(response);
     }

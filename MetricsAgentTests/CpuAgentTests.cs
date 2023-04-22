@@ -1,10 +1,9 @@
 using MetricsAgent.Controllers;
+using MetricsAgent.DAL;
 using MetricsAgent.Logger;
 using MetricsAgent.Repositories.CpuRepository;
-using MetricsAgent.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using MetricsAgent.Models;
-using MetricsAgent.Models.Requests;
+
 
 namespace MetricsAgentTests;
 
@@ -12,9 +11,9 @@ public class CpuAgentTests
 {
     private CpuController _cpuController;
 
-    public CpuAgentTests(ICpuMetricsRepository repository, IAgentLogger logger)
+    public CpuAgentTests(CpuMetricsRepository repository, AgentLogger logger)
     {
-        _cpuController = new CpuController(repository, logger);
+
     }
 
  

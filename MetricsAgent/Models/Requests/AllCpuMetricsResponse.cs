@@ -1,7 +1,8 @@
-﻿namespace MetricsAgent.Models.Requests
+﻿using MetricsAgent.Models.Dto;
+
+namespace MetricsAgent.Models.Requests;
+
+public class AllCpuMetricsResponse
 {
-    public class AllCpuMetricsResponse
-    {
-        public List<CpuMetrics> CpuMetrics { get; set; }
-    }
+    public List<CpuMetricsDto> CpuMetrics { get; set; }
 }

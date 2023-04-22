@@ -1,8 +1,9 @@
-﻿namespace MetricsAgent.Models.Requests
+﻿using MetricsAgent.Models.Dto;
+
+namespace MetricsAgent.Models.Requests;
+
+public class AllDotNetMetricsResponse
 {
-    public class AllDotNetMetricsResponse
-    {
-        public List<DotNetMetrics> DotNetMetrics { get; set; }
-    }
+    public List<DotNetMetricsDto> DotNetMetrics { get; set; }
 }
 

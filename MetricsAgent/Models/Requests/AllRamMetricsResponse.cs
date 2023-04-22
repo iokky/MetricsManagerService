@@ -1,6 +1,8 @@
-﻿namespace MetricsAgent.Models.Requests;
+﻿using MetricsAgent.Models.Dto;
+
+namespace MetricsAgent.Models.Requests;
 
 public class AllRamMetricsResponse
 {
-    public List<RamMetrics> RamMetrics { get; set; }
+    public List<RamMetricsDto> RamMetrics { get; set; }
 }

@@ -1,14 +1,13 @@
-﻿namespace MetricsAgent.Models
-{
-    public class HddMetrics
-    {
-        public int Id { get; set; }
-        public int Value { get; set; }
-        public double Time { get; set; }
+﻿namespace MetricsAgent.Models;
 
-        public override string ToString()
-        {
-            return $"{Id} - {Value} - {Time}";
-        }
+public class HddMetrics
+{
+    public int Id { get; set; }
+    public int Value { get; set; }
+    public double Time { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Id} - {Value} - {Time}";
     }
 }

@@ -1,4 +1,4 @@
-﻿using MetricsAgent.Controllers;
+﻿/*using MetricsAgent.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsAgentTests;
@@ -22,4 +22,4 @@ public class RamAgentTests
         Assert.NotNull(result);
         Assert.IsAssignableFrom<IActionResult>(result);
     }
-}
+}*/

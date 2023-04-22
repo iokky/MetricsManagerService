@@ -1,7 +1,7 @@
 ﻿using MetricsAgent.Logger;
 using MetricsAgent.Models;
+using MetricsAgent.Models.Dto;
 using MetricsAgent.Models.Requests;
-using MetricsAgent.Repositories.DotNetRepository;
 using MetricsAgent.Repositories.NetworkRepository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +25,16 @@ public class NetworkController : ControllerBase
     [HttpGet("from/{fromTime}/to/{toTime}")]
     public IActionResult GetNetworkMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
     {
-        var response = new AllNetworkMetricsResponse() { NetworkMetrics = _repository.GetByRange(fromTime, toTime).ToList() };
+        var response = new AllNetworkMetricsResponse() { NetworkMetrics = new List<NetworkMetricsDto>()};
+        foreach (var metric in _repository.GetByRange(fromTime, toTime))
+        {
+            response.NetworkMetrics.Add(new NetworkMetricsDto() 
+            {
+                Id = metric.Id,
+                Value = metric.Value,
+                Time = TimeSpan.FromSeconds(metric.Time),
+            });
+        }
         _logger?.LogDebug($"|NETWORK| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
@@ -48,7 +57,17 @@ public class NetworkController : ControllerBase
     [HttpGet("all")]
     public IActionResult GetAll()
     {
-        var response = new AllNetworkMetricsResponse() { NetworkMetrics = _repository.GetAll().ToList() };
+        var response = new AllNetworkMetricsResponse() { NetworkMetrics = new List<NetworkMetricsDto>()};
+        foreach (var metric in _repository.GetAll())
+        {
+            response.NetworkMetrics.Add(new NetworkMetricsDto() 
+            {
+                Id = metric.Id,
+                Value = metric.Value,
+                Time = TimeSpan.FromSeconds(metric.Time)
+            });
+        }
+
         _logger?.LogDebug("|NETWORK| Все записи метрик получены");
         return Ok(response);
     }

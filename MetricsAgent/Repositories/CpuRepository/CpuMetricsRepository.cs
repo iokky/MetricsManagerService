@@ -1,5 +1,4 @@
 ﻿using MetricsAgent.DAL;
-using MetricsAgent.Logger;
 using MetricsAgent.Models;
 
 
@@ -8,12 +7,10 @@ namespace MetricsAgent.Repositories.CpuRepository;
 public class CpuMetricsRepository : ICpuMetricsRepository
 {
     private AgentDbContext _db;
-    private IAgentLogger _logger;
 
-    public CpuMetricsRepository(AgentDbContext db, IAgentLogger logger)
+    public CpuMetricsRepository(AgentDbContext db)
     {
         _db = db;
-        _logger = logger;
     }
     public void Create(CpuMetrics item)
     {

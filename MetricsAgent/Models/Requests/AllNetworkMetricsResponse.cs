@@ -1,7 +1,9 @@
-﻿namespace MetricsAgent.Models.Requests
+﻿using MetricsAgent.Models.Dto;
+
+namespace MetricsAgent.Models.Requests
 {
     public class AllNetworkMetricsResponse
     {
-        public List<NetworkMetrics> NetworkMetrics { get; set; }
+        public List<NetworkMetricsDto> NetworkMetrics { get; set; }
     }
 }
