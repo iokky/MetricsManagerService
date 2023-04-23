@@ -4,6 +4,7 @@ using MetricsAgent.Models;
 using Microsoft.AspNetCore.Mvc;
 using MetricsAgent.Repositories.DotNetRepository;
 using MetricsAgent.Models.Dto;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers;
 
@@ -12,11 +13,13 @@ namespace MetricsAgent.Controllers;
 public class DotNetController : ControllerBase
 {
     private readonly IDotNetMetricsRepository _repository;
+    private readonly IMapper _mapper;
     private readonly IAgentLogger _logger;
 
-    public DotNetController(IDotNetMetricsRepository repository, IAgentLogger logger)
+    public DotNetController(IDotNetMetricsRepository repository, IMapper mapper, IAgentLogger logger)
     {
         _repository = repository;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -24,16 +27,12 @@ public class DotNetController : ControllerBase
     [HttpGet("from/{fromTime}/to/{toTime}")]
     public IActionResult GetDotNetMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
     {
-        var response = new AllDotNetMetricsResponse() { DotNetMetrics = new List<DotNetMetricsDto>()};
-        foreach (var metric in _repository.GetByRange(fromTime, toTime).ToList())
-        {
-            response.DotNetMetrics.Add(new DotNetMetricsDto() 
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time),
-            });
-        }
+        var response = new AllDotNetMetricsResponse() { 
+            DotNetMetrics = _repository.GetByRange(fromTime, toTime).Select(i => 
+                    _mapper.Map<DotNetMetricsDto>(i)
+                ).ToList()
+        };
+
         _logger?.LogDebug($"|DOTNET| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
@@ -41,11 +40,7 @@ public class DotNetController : ControllerBase
     [HttpPost("create")]
     public IActionResult AddMetrics([FromBody] DotNetMetricsCreateRequest request)
     {
-        var dotNetMetric = new DotNetMetrics()
-        {
-            Value = request.Value,
-            Time = request.Time.TotalSeconds
-        };
+        var dotNetMetric = _mapper.Map<DotNetMetrics>(request);
 
         _repository.Create(dotNetMetric);
 
@@ -56,16 +51,12 @@ public class DotNetController : ControllerBase
     [HttpGet("all")]
     public IActionResult GetAll()
     {
-        var response = new AllDotNetMetricsResponse() { DotNetMetrics = new List<DotNetMetricsDto>()};
-        foreach (var metric in _repository.GetAll().ToList())
+        var response = new AllDotNetMetricsResponse()
         {
-            response.DotNetMetrics.Add(new DotNetMetricsDto() 
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time  = TimeSpan.FromSeconds(metric.Time)
-            });
-        }
+            DotNetMetrics = _repository.GetAll().Select(i =>
+                    _mapper.Map<DotNetMetricsDto>(i)
+            ).ToList()
+        };
         _logger?.LogDebug("|DOTNET| Все записи метрик получены");
         return Ok(response);
     }

@@ -1,4 +1,5 @@
-﻿using MetricsAgent.Logger;
+﻿using AutoMapper;
+using MetricsAgent.Logger;
 using MetricsAgent.Models;
 using MetricsAgent.Models.Dto;
 using MetricsAgent.Models.Requests;
@@ -14,11 +15,13 @@ namespace MetricsAgent.Controllers;
 public class CpuController : ControllerBase
 {
     private readonly ICpuMetricsRepository _repository;
+    private readonly IMapper _mapper;
     private readonly IAgentLogger _logger;
 
-    public CpuController(ICpuMetricsRepository repository, IAgentLogger logger)
+    public CpuController(ICpuMetricsRepository repository, IMapper mapper, IAgentLogger logger)
     {
         _repository = repository;
+        _mapper = mapper;
         _logger = logger;
     }
 
@@ -26,18 +29,12 @@ public class CpuController : ControllerBase
     [HttpGet("from/{fromTime}/to/{toTime}")]
     public IActionResult GetCpuMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
-        var response = new AllCpuMetricsResponse() { CpuMetrics = new List<CpuMetricsDto>()};
-        foreach (var metric in _repository.GetByRange(fromTime, toTime))
-        {
-            response.CpuMetrics.Add(new CpuMetricsDto()
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time)
-            });  
-        }
-    
-
+        var response = new AllCpuMetricsResponse() { 
+            CpuMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+                _mapper.Map<CpuMetricsDto>(i)
+            ).ToList()
+        };
+        
         _logger?.LogDebug($"|CPU| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
@@ -45,12 +42,7 @@ public class CpuController : ControllerBase
     [HttpPost("create")]
     public IActionResult AddMetrics([FromBody] CpuMetricsCreateRequest request)
     {
-        var cpuMetric = new CpuMetrics()
-        {
-            Value = request.Value,
-            Time = request.Time.TotalSeconds
-        };
-
+        var cpuMetric = _mapper.Map<CpuMetrics>(request);
         _repository.Create(cpuMetric);
 
         _logger?.LogDebug($"|CPU| Успешно добавили новую cpu метрику: {cpuMetric}");
@@ -58,24 +50,16 @@ public class CpuController : ControllerBase
     }
 
     [HttpGet("all")]
-    public IActionResult GetAll() 
+    public IActionResult GetAll()
     {
-        var response = new AllCpuMetricsResponse() { CpuMetrics = new List<CpuMetricsDto>() };
-        foreach (var metric in _repository.GetAll().ToList())
+        var response = new AllCpuMetricsResponse()
         {
-            response.CpuMetrics.Add(new CpuMetricsDto()
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time)
-            });
-        }
+            CpuMetrics = _repository.GetAll().Select(i =>
+                _mapper.Map<CpuMetricsDto>(i)).ToList()
+        }; 
 
         _logger?.LogDebug("|CPU| Все записи метрик получены");
         return Ok(response);
     }
-
-
-    
 }
 

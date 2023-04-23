@@ -42,8 +42,10 @@ internal class Program
             options.UseSqlite(builder.Configuration.GetConnectionString("AgentDB"));
         });
 
+        //Add automapper
+        builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-        //add metrics services
+        //Add metrics services
 
         builder.Services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
         builder.Services.AddScoped<IDotNetMetricsRepository, DotNetRepository>();

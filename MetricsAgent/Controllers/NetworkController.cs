@@ -1,4 +1,5 @@
-﻿using MetricsAgent.Logger;
+﻿using AutoMapper;
+using MetricsAgent.Logger;
 using MetricsAgent.Models;
 using MetricsAgent.Models.Dto;
 using MetricsAgent.Models.Requests;
@@ -14,27 +15,25 @@ namespace MetricsAgent.Controllers;
 public class NetworkController : ControllerBase
 {
     private readonly INetworkRepository _repository;
+    private readonly IMapper _mapper;
     private readonly IAgentLogger _logger;
 
-    public NetworkController(INetworkRepository repository, IAgentLogger logger)
+    public NetworkController(INetworkRepository repository, IMapper mapper, IAgentLogger logger)
     {
         _repository = repository;
+        _mapper = mapper;
         _logger = logger;
     }
 
     [HttpGet("from/{fromTime}/to/{toTime}")]
     public IActionResult GetNetworkMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
     {
-        var response = new AllNetworkMetricsResponse() { NetworkMetrics = new List<NetworkMetricsDto>()};
-        foreach (var metric in _repository.GetByRange(fromTime, toTime))
-        {
-            response.NetworkMetrics.Add(new NetworkMetricsDto() 
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time),
-            });
-        }
+        var response = new AllNetworkMetricsResponse() { 
+            NetworkMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+                _mapper.Map<NetworkMetricsDto>(i)
+            ).ToList()
+        };
+
         _logger?.LogDebug($"|NETWORK| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
@@ -42,11 +41,7 @@ public class NetworkController : ControllerBase
     [HttpPost("create")]
     public IActionResult AddMetrics([FromBody] NetworkMetricsCreateRequest request)
     {
-        var networkNetMetric = new NetworkMetrics()
-        {
-            Value = request.Value,
-            Time = request.Time.TotalSeconds
-        };
+        var networkNetMetric = _mapper.Map<NetworkMetrics>(request);
 
         _repository.Create(networkNetMetric);
 
@@ -57,16 +52,11 @@ public class NetworkController : ControllerBase
     [HttpGet("all")]
     public IActionResult GetAll()
     {
-        var response = new AllNetworkMetricsResponse() { NetworkMetrics = new List<NetworkMetricsDto>()};
-        foreach (var metric in _repository.GetAll())
-        {
-            response.NetworkMetrics.Add(new NetworkMetricsDto() 
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time)
-            });
-        }
+        var response = new AllNetworkMetricsResponse() { 
+            NetworkMetrics = _repository.GetAll().Select(i =>
+                _mapper.Map<NetworkMetricsDto>(i)
+            ).ToList()
+        };
 
         _logger?.LogDebug("|NETWORK| Все записи метрик получены");
         return Ok(response);

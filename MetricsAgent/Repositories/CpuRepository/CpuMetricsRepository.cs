@@ -6,7 +6,7 @@ namespace MetricsAgent.Repositories.CpuRepository;
 
 public class CpuMetricsRepository : ICpuMetricsRepository
 {
-    private AgentDbContext _db;
+    private readonly AgentDbContext _db;
 
     public CpuMetricsRepository(AgentDbContext db)
     {
@@ -19,10 +19,9 @@ public class CpuMetricsRepository : ICpuMetricsRepository
     }
 
     public void Delete(int id)
-    {
-        _db.Remove(
-                _db.cpuMetrics.First(i => i.Id == id)
-            );
+    {       
+        _db.cpuMetrics.Remove(GetById(id));
+        _db.SaveChanges();
     }
 
     public IList<CpuMetrics> GetAll()
@@ -38,12 +37,11 @@ public class CpuMetricsRepository : ICpuMetricsRepository
     public void Update(CpuMetrics item)
     {
         _db.Update(item);
+        _db.SaveChanges();
     }
 
     public IList<CpuMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
     {
-        var result = _db.cpuMetrics.Where<CpuMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
-
-        return result.ToList();
+        return _db.cpuMetrics.Where<CpuMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();       
     }
 }

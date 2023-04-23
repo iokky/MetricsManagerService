@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MetricsAgent.Logger;
 using MetricsAgent.Repositories.HddRepository;
 using MetricsAgent.Models.Dto;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers;
 
@@ -13,25 +14,24 @@ namespace MetricsAgent.Controllers;
 public class HddController : ControllerBase
 {
     private readonly IHddRepository _repository;
+    private readonly IMapper _mapper;
     private readonly IAgentLogger _logger;
-    public HddController(IHddRepository repository, IAgentLogger logger)
+    public HddController(IHddRepository repository, IMapper mapper, IAgentLogger logger)
     {
         _repository = repository;
+        _mapper = mapper;
         _logger = logger;
     }
+
     [HttpGet("left/from/{fromTime}/to/{toTime}")]
     public IActionResult GetHddMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
-        var response = new AllHddMetricsResponse() { HddMetrics = new List<HddMetricsDto>()};
-        foreach (var metric in _repository.GetByRange(fromTime, toTime))
-        {
-            response.HddMetrics.Add(new HddMetricsDto() 
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time),
-            });
-        }
+        var response = new AllHddMetricsResponse() { 
+            HddMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+                _mapper.Map<HddMetricsDto>(i)
+            ).ToList()
+        };
+
         _logger?.LogDebug($"|HDD| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
@@ -39,11 +39,7 @@ public class HddController : ControllerBase
     [HttpPost("create")]
     public IActionResult AddMetrics([FromBody] HddMetricsCreateRequest request)
     {
-        var hddNetMetric = new HddMetrics()
-        {
-            Value = request.Value,
-            Time = request.Time.TotalSeconds
-        };
+        var hddNetMetric = _mapper.Map<HddMetrics>(request);
 
         _repository.Create(hddNetMetric);
 
@@ -54,16 +50,12 @@ public class HddController : ControllerBase
     [HttpGet("all")]
     public IActionResult GetAll()
     {
-        var response = new AllHddMetricsResponse() { HddMetrics = new List<HddMetricsDto>()};
-        foreach (var metric in _repository.GetAll().ToList())
-        {
-            response.HddMetrics.Add(new HddMetricsDto()
-            {
-                Id = metric.Id,
-                Value = metric.Value,
-                Time = TimeSpan.FromSeconds(metric.Time),
-            });
-        }
+        var response = new AllHddMetricsResponse() { 
+            HddMetrics = _repository.GetAll().ToList().Select(i =>
+                _mapper.Map<HddMetricsDto>(i)
+            ).ToList()
+        };
+
         _logger?.LogDebug("|HDD| Все записи метрик получены");
         return Ok(response);
     }
