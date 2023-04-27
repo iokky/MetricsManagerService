@@ -38,17 +38,6 @@ public class NetworkController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("create")]
-    public IActionResult AddMetrics([FromBody] NetworkMetricsCreateRequest request)
-    {
-        var networkNetMetric = _mapper.Map<NetworkMetrics>(request);
-
-        _repository.Create(networkNetMetric);
-
-        _logger?.LogDebug($"|NETWORK| Успешно добавили новую dotNet метрику: {networkNetMetric}");
-        return Ok();
-    }
-
     [HttpGet("all")]
     public IActionResult GetAll()
     {

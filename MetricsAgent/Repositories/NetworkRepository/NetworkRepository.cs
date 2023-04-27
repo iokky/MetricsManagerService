@@ -12,8 +12,8 @@ public class NetworkRepository : INetworkRepository
     }
     public void Create(NetworkMetrics item)
     {
-        _db.Add(item);
-        _db.SaveChanges();
+        _db.AddAsync(item);
+        _db.SaveChangesAsync();
     }
 
     public void Delete(int id)

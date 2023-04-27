@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MetricsAgent.Migrations
 {
     [DbContext(typeof(AgentDbContext))]
-    [Migration("20230421140456_add_netwwork")]
-    partial class add_netwwork
+    [Migration("20230425080813_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,6 +85,23 @@ namespace MetricsAgent.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("networkMetrics");
+                });
+
+            modelBuilder.Entity("MetricsAgent.Models.RamMetrics", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Time")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ramMetrics");
                 });
 #pragma warning restore 612, 618
         }

@@ -36,17 +36,6 @@ public class HddController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("create")]
-    public IActionResult AddMetrics([FromBody] HddMetricsCreateRequest request)
-    {
-        var hddNetMetric = _mapper.Map<HddMetrics>(request);
-
-        _repository.Create(hddNetMetric);
-
-        _logger?.LogDebug($"|HDD| Успешно добавили новую dotNet метрику: {hddNetMetric}");
-        return Ok();
-    }
-
     [HttpGet("all")]
     public IActionResult GetAll()
     {

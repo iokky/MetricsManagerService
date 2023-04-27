@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsAgent.Controllers;
 
 [Route("api/cpu")]
-
 [ApiController]
 public class CpuController : ControllerBase
 {
@@ -37,16 +36,6 @@ public class CpuController : ControllerBase
         
         _logger?.LogDebug($"|CPU| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
-    }
-
-    [HttpPost("create")]
-    public IActionResult AddMetrics([FromBody] CpuMetricsCreateRequest request)
-    {
-        var cpuMetric = _mapper.Map<CpuMetrics>(request);
-        _repository.Create(cpuMetric);
-
-        _logger?.LogDebug($"|CPU| Успешно добавили новую cpu метрику: {cpuMetric}");
-        return Ok();
     }
 
     [HttpGet("all")]

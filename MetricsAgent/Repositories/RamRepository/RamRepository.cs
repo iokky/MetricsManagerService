@@ -13,8 +13,8 @@ public class RamRepository : IRamRepository
     }
     public void Create(RamMetrics item)
     {
-        _db.Add(item);
-        _db.SaveChanges();
+        _db.AddAsync(item);
+        _db.SaveChangesAsync();
     }
 
     public void Delete(int id)

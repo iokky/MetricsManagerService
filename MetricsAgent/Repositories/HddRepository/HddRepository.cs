@@ -13,8 +13,8 @@ namespace MetricsAgent.Repositories.HddRepository
         }
         public void Create(HddMetrics item)
         {
-            _db.Add(item);
-            _db.SaveChanges();
+            _db.AddAsync(item);
+            _db.SaveChangesAsync();
         }
 
         public void Delete(int id)

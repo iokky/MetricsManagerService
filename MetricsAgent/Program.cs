@@ -8,6 +8,11 @@ using MetricsAgent.Repositories.DotNetRepository;
 using MetricsAgent.Repositories.HddRepository;
 using MetricsAgent.Repositories.NetworkRepository;
 using MetricsAgent.Repositories.RamRepository;
+using Quartz;
+using Quartz.Spi;
+using MetricsAgent.Jobs;
+using Quartz.Impl;
+
 
 internal class Program
 {
@@ -20,11 +25,6 @@ internal class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
-/*            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
-            });*/
-
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -37,24 +37,58 @@ internal class Program
         );
 
 
+        /*Add Db Context*/
         builder.Services.AddDbContext<AgentDbContext>(options =>
         {
-            options.UseSqlite(builder.Configuration.GetConnectionString("AgentDB"));
-        });
+            options.UseSqlite(builder.Configuration.GetConnectionString("AgentDB"));  
+            // Lifetime options
+        }, ServiceLifetime.Singleton);
 
-        //Add automapper
+
+
+        /*Add automapper*/
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-        //Add metrics services
+        /*Add metrics services*/
 
-        builder.Services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
-        builder.Services.AddScoped<IDotNetMetricsRepository, DotNetRepository>();
-        builder.Services.AddScoped<IHddRepository, HddRepository>();
-        builder.Services.AddScoped<INetworkRepository, NetworkRepository>();
-        builder.Services.AddScoped<IRamRepository, RamRepository>();
+            // Last AddScoped
+        builder.Services.AddTransient<ICpuMetricsRepository, CpuMetricsRepository>();
+            // Last AddScoped
+        builder.Services.AddTransient<IDotNetMetricsRepository, DotNetRepository>();
+            // Last AddScoped
+        builder.Services.AddTransient<IHddRepository, HddRepository>();
+        // Last AddScoped
+        builder.Services.AddTransient<INetworkRepository, NetworkRepository>();
+            // Last AddScoped
+        builder.Services.AddTransient<IRamRepository, RamRepository>();
 
+        /*Add Quartz*/
+        builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
+        builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
+        builder.Services.AddHostedService<QuartzHostedService>();
+
+            //Add Jobs
+
+                //Cpu
+        builder.Services.AddTransient<CpuMetricsJob>();
+        builder.Services.AddSingleton(new JobSchedule(typeof(CpuMetricsJob), "0/5 * * ? * * *"));
+                //DotNet
+        //builder.Services.AddTransient<DotNetMetricsJob>();
+        //builder.Services.AddSingleton(new JobSchedule(typeof(DotNetMetricsJob), "0/5 * * ? * * *"));
+                //Ram
+        builder.Services.AddTransient<RamMetricsJob>();
+        builder.Services.AddSingleton(new JobSchedule(typeof(RamMetricsJob), "0/5 * * ? * * *"));
+                //Hdd
+        builder.Services.AddTransient<HddMetricsJob>();
+        builder.Services.AddSingleton(new JobSchedule(typeof(HddMetricsJob), "0/5 * * ? * * *"));
+                //Network
+        builder.Services.AddTransient<NetworkMetricsJob>();
+        builder.Services.AddSingleton(new JobSchedule(typeof(NetworkMetricsJob), "0/5 * * ? * * *"));
+
+        /*Add logger*/
         builder.Services.AddScoped<IAgentLogger, AgentLogger>();
+
 
         var app = builder.Build();
 

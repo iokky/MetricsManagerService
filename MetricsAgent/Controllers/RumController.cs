@@ -35,18 +35,6 @@ public class RamController : ControllerBase
         _logger?.LogDebug($"|RAM| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
-
-    [HttpPost("create")]
-    public IActionResult AddMetrics([FromBody] RamMetricsCreateReqest request)
-    {
-        var ramNetMetric = _mapper.Map<RamMetrics>(request);
-
-
-        _repository.Create(ramNetMetric);
-
-        _logger?.LogDebug($"|RAM| Успешно добавили новую dotNet метрику: {ramNetMetric}");
-        return Ok();
-    }
     
     [HttpGet("all")]
     public IActionResult GetAll()

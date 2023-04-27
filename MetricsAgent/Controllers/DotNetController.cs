@@ -37,17 +37,6 @@ public class DotNetController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("create")]
-    public IActionResult AddMetrics([FromBody] DotNetMetricsCreateRequest request)
-    {
-        var dotNetMetric = _mapper.Map<DotNetMetrics>(request);
-
-        _repository.Create(dotNetMetric);
-
-        _logger?.LogDebug($"|DOTNET| Успешно добавили новую dotNet метрику: {dotNetMetric}");
-        return Ok();
-    }
-
     [HttpGet("all")]
     public IActionResult GetAll()
     {
