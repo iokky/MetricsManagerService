@@ -45,7 +45,6 @@ public class MapperPofile: Profile
             ForMember(req => req.Time, opt =>
                 opt.MapFrom(src => src.Time.TotalSeconds));
 
-
         //Ram map
         this.CreateMap<RamMetrics, RamMetricsDto>().
             ForMember(dot => dot.Time, opt =>

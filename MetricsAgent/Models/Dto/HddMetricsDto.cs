@@ -2,7 +2,7 @@
 
 public class HddMetricsDto
 {
-    public int Id { get; set; }
+    public int Guid { get; set; }
     public int Value { get; set; }
     public TimeSpan Time { get; set; }
 }

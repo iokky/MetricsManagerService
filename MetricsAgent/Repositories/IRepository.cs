@@ -1,12 +1,12 @@
-﻿namespace MetricsAgent.Repositories;
+﻿using MetricsAgent.Models;
+
+namespace MetricsAgent.Repositories;
 
 public interface IRepository<T> where T : class
 {
     public IList<T> GetAll();
-    public T GetById(int id);
-    public void Create(T item);
-    public void Update(T item);
-    public void Delete(int id);
+    public Task Create(T item);
+
     public IList<T> GetByRange(TimeSpan fromTime, TimeSpan toTime);
 
 }

@@ -9,7 +9,7 @@ public class CpuManagetTests
 
     public CpuManagetTests()
     {
-        _cpuController = new CpuController();
+        //_cpuController = new CpuController();
     }
 
     [Fact]

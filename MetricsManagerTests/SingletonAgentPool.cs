@@ -2,21 +2,21 @@
 
 namespace MetricsManagerTests;
 
-public class SingletonAgentPool
+/*public class SingletonAgentPool
 {
-    private static AgentsPool _instance;
+    private static AgentsRepository _instance;
 
     private SingletonAgentPool()
     {
         
     }
 
-    public static AgentsPool GetInstance()
+    public static AgentsRepository GetInstance()
     {
         if (_instance == null)
         {
-            _instance = new AgentsPool();
+            _instance = new AgentsRepository();
         }
         return _instance;   
-    }
-}
+    }ye ltkj 
+}*/

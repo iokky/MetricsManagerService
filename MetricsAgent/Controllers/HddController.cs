@@ -32,7 +32,7 @@ public class HddController : ControllerBase
             ).ToList()
         };
 
-        _logger?.LogDebug($"|HDD| Записи метрик с {fromTime} оп {toTime} получены");
+        _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
 
@@ -45,7 +45,7 @@ public class HddController : ControllerBase
             ).ToList()
         };
 
-        _logger?.LogDebug("|HDD| Все записи метрик получены");
+        _logger?.LogDebug($"|{this}| Все записи метрик получены");
         return Ok(response);
     }
 }

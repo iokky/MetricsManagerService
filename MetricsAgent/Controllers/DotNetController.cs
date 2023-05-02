@@ -33,7 +33,7 @@ public class DotNetController : ControllerBase
                 ).ToList()
         };
 
-        _logger?.LogDebug($"|DOTNET| Записи метрик с {fromTime} оп {toTime} получены");
+        _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
 
@@ -46,7 +46,7 @@ public class DotNetController : ControllerBase
                     _mapper.Map<DotNetMetricsDto>(i)
             ).ToList()
         };
-        _logger?.LogDebug("|DOTNET| Все записи метрик получены");
+        _logger?.LogDebug($"|{this}| Все записи метрик получены");
         return Ok(response);
     }
 }

@@ -23,11 +23,11 @@ public class CpuMetricsJob : IJob
         var value = _cpuCounter.NextValue();
         _repository.Create(new Models.CpuMetrics()
         {
+            Id = Guid.NewGuid(),
             Value = (int)value,
             Time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()).TotalSeconds
         });
 
-        //Debug.WriteLine($"|CPU| {TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds())}| {(int)value}%");
         return Task.CompletedTask;
     }
 }

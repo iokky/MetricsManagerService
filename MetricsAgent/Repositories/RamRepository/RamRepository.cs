@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.DAL;
+using MetricsAgent.Logger;
 using MetricsAgent.Models;
 
 namespace MetricsAgent.Repositories.RamRepository;
@@ -6,41 +7,32 @@ namespace MetricsAgent.Repositories.RamRepository;
 public class RamRepository : IRamRepository
 {
     private readonly AgentDbContext _db;
+    private readonly IAgentLogger _logger;
 
-    public RamRepository(AgentDbContext db)
+
+    public RamRepository(AgentDbContext db, IAgentLogger logger)
     {
         _db = db;
-    }
-    public void Create(RamMetrics item)
-    {
-        _db.AddAsync(item);
-        _db.SaveChangesAsync();
+        _logger = logger;
     }
 
-    public void Delete(int id)
+    public async Task Create(RamMetrics item)
     {
-        _db.Remove(
-            _db.ramMetrics.First(i => i.Id == id)
-        );
+        await _db.AddAsync(item);
+        await _db.SaveChangesAsync();
+        _logger?.LogDebug($"|{this}| Запись супешно создана");
+        Task.CompletedTask.Wait();
     }
 
     public IList<RamMetrics> GetAll()
     {
+        _logger?.LogDebug($"|{this}| Все записи метрик получены");
         return _db.ramMetrics.ToList();
-    }
-
-    public RamMetrics GetById(int id)
-    {
-        return _db.ramMetrics.FirstOrDefault(i => i.Id == id)!;
     }
 
     public IList<RamMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
     {
+        _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
         return _db.ramMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
-    }
-
-    public void Update(RamMetrics item)
-    {
-        _db.Update(item);
     }
 }

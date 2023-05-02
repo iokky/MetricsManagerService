@@ -1,5 +1,4 @@
-﻿using MetricsAgent.Repositories.CpuRepository;
-using MetricsAgent.Repositories.NetworkRepository;
+﻿using MetricsAgent.Repositories.NetworkRepository;
 using Quartz;
 using System.Diagnostics;
 
@@ -22,15 +21,14 @@ public class NetworkMetricsJob : IJob
     public Task Execute(IJobExecutionContext context)
     {
         _netCounter.NextValue();
-        Thread.Sleep(100);
+        Thread.Sleep(200);
         var value = _netCounter.NextValue();
         _repository.Create(new Models.NetworkMetrics()
         {
+            Id = Guid.NewGuid(),
             Value = (int)value,
             Time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()).TotalSeconds
         });
-
-        //Debug.WriteLine($"|NET| {TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds())}| {(int)_netCounter.NextValue()} byte");
 
         return Task.CompletedTask;
     }

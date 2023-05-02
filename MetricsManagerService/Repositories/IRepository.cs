@@ -1,13 +1,13 @@
-﻿namespace MetricsManagerService.Repositories;
+﻿using MetricsManagerService.Models;
+
+namespace MetricsManagerService.Repositories;
 
 public interface IRepository<T>
 {
-    public Dictionary<int, T> Repository { get; set; }
-    public string Add(T obj);
+    public Task Add(T obj);
 
-    public T[] GetAll();
-
-    public string Enable(int id);
-    public string Disable(int id);
+    public IEnumerable<T> GetAll();
+    public Agent GetById(int id);
+    public void SwitchState(int id);
 
 }

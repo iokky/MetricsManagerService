@@ -8,43 +8,26 @@ namespace MetricsManagerService.Controllers;
 [ApiController]
 public class AgentsController : ControllerBase
 {
-    private readonly IRepository<Agent> _pools;
-    public AgentsController(IRepository<Agent> pool)
+    private readonly IAgentRepository _repository;
+    public AgentsController(IAgentRepository repository)
     {
-        _pools = pool;
+        _repository = repository;
     }
 
     [HttpGet("all")]
-    public IActionResult GetAll() => Ok(_pools.GetAll());
+    public IActionResult GetAll() => Ok(_repository.GetAll());
 
     [HttpPost("add")]
     public IActionResult AgentRegister([FromBody]Agent agent)
     {
-        if (agent != null)
-        {
-            var msg = _pools.Add(agent);
-            if (msg == "|agent added|") { return Ok(msg); }
-            else { return BadRequest(_pools.Add(agent)); }
-        }
-        else
-        {
-            return BadRequest("empty value");
-        }
+        _repository.Add(agent);
+         return Ok();
     }
 
-    [HttpPut("enable/{agentId}")]
-    public IActionResult EnableAgentById([FromRoute] int agentId) 
+    [HttpPut("switch/{agentId}")]
+    public IActionResult SwitnAgentById([FromRoute] int agentId)
     {
-        var msg = _pools.Enable(agentId);
-        if (msg == "|agent enabled|") return Ok(msg); 
-        else return BadRequest(msg); 
-    }
-
-    [HttpPut("disable/{agentId}")]
-    public IActionResult DisableAgentById([FromRoute] int agentId)
-    {
-        var msg = _pools.Disable(agentId);
-        if (msg == "|agent disabled|") return Ok(msg); 
-        else return BadRequest(msg); 
+        _repository.SwitchState(agentId);
+        return Ok();
     }
 }

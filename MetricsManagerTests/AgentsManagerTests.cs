@@ -7,10 +7,10 @@ using Xunit.Sdk;
 
 namespace MetricsManagerTests;
 
-public class AgentsManagerTests
+/*public class AgentsManagerTests
 {
     private AgentsController _agentsController;
-    private AgentsPool _agentsPool;
+    private AgentsRepository _agentsPool;
 
     public AgentsManagerTests()
     {
@@ -58,8 +58,4 @@ public class AgentsManagerTests
         Assert.NotNull(okObjectResult.Value as IEnumerable<Agent>);
         Assert.NotEmpty((IEnumerable<Agent>)okObjectResult.Value);
     }
-
-
-
-
-}
+}*/

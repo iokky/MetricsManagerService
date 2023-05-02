@@ -19,15 +19,14 @@ public class RamMetricsJob : IJob
     public Task Execute(IJobExecutionContext context)
     {
         _cpuCounter.NextValue();
-        Thread.Sleep(100);
+        Thread.Sleep(250);
         var value = _cpuCounter.NextValue();
         _repository.Create(new Models.RamMetrics()
         {
+            Id = Guid.NewGuid(),
             Value = (int)value,
             Time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()).TotalSeconds
         });
-
-        //Debug.WriteLine($"|RAM| {TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds())}| {(int)value} MB");
         
         return Task.CompletedTask;
     }

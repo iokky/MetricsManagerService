@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MetricsAgent.Logger;
-using MetricsAgent.Models;
 using MetricsAgent.Models.Dto;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Repositories.CpuRepository;
@@ -34,7 +33,7 @@ public class CpuController : ControllerBase
             ).ToList()
         };
         
-        _logger?.LogDebug($"|CPU| Записи метрик с {fromTime} оп {toTime} получены");
+        _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
         return Ok(response);
     }
 
@@ -47,7 +46,7 @@ public class CpuController : ControllerBase
                 _mapper.Map<CpuMetricsDto>(i)).ToList()
         }; 
 
-        _logger?.LogDebug("|CPU| Все записи метрик получены");
+        _logger?.LogDebug($"|{this}| Все записи метрик получены");
         return Ok(response);
     }
 }

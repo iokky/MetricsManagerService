@@ -45,22 +45,22 @@ internal class Program
         }, ServiceLifetime.Singleton);
 
 
-
         /*Add automapper*/
         builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
         /*Add metrics services*/
-
+        #region Repository
             // Last AddScoped
         builder.Services.AddTransient<ICpuMetricsRepository, CpuMetricsRepository>();
             // Last AddScoped
         builder.Services.AddTransient<IDotNetMetricsRepository, DotNetRepository>();
             // Last AddScoped
         builder.Services.AddTransient<IHddRepository, HddRepository>();
-        // Last AddScoped
+            // Last AddScoped
         builder.Services.AddTransient<INetworkRepository, NetworkRepository>();
             // Last AddScoped
         builder.Services.AddTransient<IRamRepository, RamRepository>();
+        #endregion
 
         /*Add Quartz*/
         builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
@@ -68,27 +68,37 @@ internal class Program
 
         builder.Services.AddHostedService<QuartzHostedService>();
 
-            //Add Jobs
-
-                //Cpu
+        //Add Jobs
+        #region Jobs
+        //Cpu
         builder.Services.AddTransient<CpuMetricsJob>();
         builder.Services.AddSingleton(new JobSchedule(typeof(CpuMetricsJob), "0/5 * * ? * * *"));
-                //DotNet
+        //DotNet
         //builder.Services.AddTransient<DotNetMetricsJob>();
         //builder.Services.AddSingleton(new JobSchedule(typeof(DotNetMetricsJob), "0/5 * * ? * * *"));
                 //Ram
         builder.Services.AddTransient<RamMetricsJob>();
         builder.Services.AddSingleton(new JobSchedule(typeof(RamMetricsJob), "0/5 * * ? * * *"));
-                //Hdd
+        //Hdd
         builder.Services.AddTransient<HddMetricsJob>();
         builder.Services.AddSingleton(new JobSchedule(typeof(HddMetricsJob), "0/5 * * ? * * *"));
                 //Network
         builder.Services.AddTransient<NetworkMetricsJob>();
         builder.Services.AddSingleton(new JobSchedule(typeof(NetworkMetricsJob), "0/5 * * ? * * *"));
+        #endregion
 
         /*Add logger*/
-        builder.Services.AddScoped<IAgentLogger, AgentLogger>();
+        builder.Services.AddTransient<IAgentLogger, AgentLogger>();
 
+        builder.Services.AddCors(options => 
+        {
+            options.AddPolicy("First", builder => 
+            {
+                builder.AllowAnyHeader();
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+            });
+        });
 
         var app = builder.Build();
 
@@ -98,7 +108,8 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        app.UseCors("First");
+         
         app.UseHttpsRedirection();
 
         app.UseAuthorization();

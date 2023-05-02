@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.DAL;
+using MetricsAgent.Logger;
 using MetricsAgent.Models;
 
 namespace MetricsAgent.Repositories.HddRepository
@@ -6,42 +7,32 @@ namespace MetricsAgent.Repositories.HddRepository
     public class HddRepository : IHddRepository
     {
         private readonly AgentDbContext _db;
+        private readonly IAgentLogger _logger;
 
-        public HddRepository(AgentDbContext db)
+        public HddRepository(AgentDbContext db, IAgentLogger logger)
         {
             _db = db;
+            _logger = logger;
         }
-        public void Create(HddMetrics item)
+        public async Task Create(HddMetrics item)
         {
-            _db.AddAsync(item);
-            _db.SaveChangesAsync();
-        }
+            await _db.AddAsync(item);
+            await _db.SaveChangesAsync();
+            _logger?.LogDebug($"|{this}| Запись супешно создана");
+            Task.CompletedTask.Wait();
 
-        public void Delete(int id)
-        {
-            _db.Remove(
-                _db.hddMetrics.First(i => i.Id == id)
-            );
         }
 
         public IList<HddMetrics> GetAll()
         {
+            _logger?.LogDebug($"|{this}| Все записи метрик получены");
             return _db.hddMetrics.ToList();
-        }
-
-        public HddMetrics GetById(int id)
-        {
-            return _db.hddMetrics.FirstOrDefault(i => i.Id == id)!;
         }
 
         public IList<HddMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
         {
+            _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
             return _db.hddMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
-        }
-
-        public void Update(HddMetrics item)
-        {
-            _db.Update(item);
         }
     }
 }

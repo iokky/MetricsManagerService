@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.DAL;
+using MetricsAgent.Logger;
 using MetricsAgent.Models;
 
 
@@ -7,41 +8,30 @@ namespace MetricsAgent.Repositories.CpuRepository;
 public class CpuMetricsRepository : ICpuMetricsRepository
 {
     private readonly AgentDbContext _db;
+    private readonly IAgentLogger _logger;
 
-    public CpuMetricsRepository(AgentDbContext db)
+    public CpuMetricsRepository(AgentDbContext db, IAgentLogger logger)
     {
         _db = db;
+        _logger = logger;
     }
-    public void Create(CpuMetrics item)
+    public async Task Create(CpuMetrics item)
     {
-        _db.AddAsync(item);
-        _db.SaveChangesAsync();
-    }
-
-    public void Delete(int id)
-    {       
-        _db.cpuMetrics.Remove(GetById(id));
-        _db.SaveChanges();
+        await _db.AddAsync(item);
+        await _db.SaveChangesAsync();
+        _logger?.LogDebug($"|{this}| Запись супешно создана");
+        Task.CompletedTask.Wait();
     }
 
     public IList<CpuMetrics> GetAll()
     {
+        _logger?.LogDebug($"|{this}| Все записи метрик получены");
         return _db.cpuMetrics.ToList();
-    }
-
-    public CpuMetrics GetById(int id)
-    {
-        return _db.cpuMetrics.FirstOrDefault(i => i.Id == id)!;
-    }
-
-    public void Update(CpuMetrics item)
-    {
-        _db.Update(item);
-        _db.SaveChanges();
     }
 
     public IList<CpuMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
     {
+        _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
         return _db.cpuMetrics.Where<CpuMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();       
     }
 }

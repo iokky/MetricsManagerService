@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.DAL;
+using MetricsAgent.Logger;
 using MetricsAgent.Models;
 
 namespace MetricsAgent.Repositories.DotNetRepository
@@ -6,43 +7,32 @@ namespace MetricsAgent.Repositories.DotNetRepository
     public class DotNetRepository : IDotNetMetricsRepository
     {
         private AgentDbContext _db;
+        private readonly IAgentLogger _logger;
 
-        public DotNetRepository(AgentDbContext db)
+        public DotNetRepository(AgentDbContext db, IAgentLogger logger)
         {
             _db = db;
+            _logger = logger;
 
         }
-        public void Create(DotNetMetrics item)
+        public async Task Create(DotNetMetrics item)
         {
-            _db.AddAsync(item);
-            _db.SaveChangesAsync();
-        }
-
-        public void Delete(int id)
-        {
-            _db.Remove(
-                _db.dotNetMetrics.First(i => i.Id == id)
-            );
+            await _db.AddAsync(item);
+            await _db.SaveChangesAsync();
+            _logger?.LogDebug($"|{this}| Запись супешно создана");
+            Task.CompletedTask.Wait();
         }
 
         public IList<DotNetMetrics> GetAll()
         {
+            _logger?.LogDebug($"|{this}| Все записи метрик получены");
             return _db.dotNetMetrics.ToList();
-        }
-
-        public DotNetMetrics GetById(int id)
-        {
-            return _db.dotNetMetrics.FirstOrDefault(i => i.Id == id)!;
         }
 
         public IList<DotNetMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
         {
+            _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
             return _db.dotNetMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
-        }
-
-        public void Update(DotNetMetrics item)
-        {
-            _db.Update(item);
         }
     }
 }
