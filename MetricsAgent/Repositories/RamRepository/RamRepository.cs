@@ -1,6 +1,7 @@
 ﻿using MetricsAgent.DAL;
 using MetricsAgent.Logger;
 using MetricsAgent.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MetricsAgent.Repositories.RamRepository;
 
@@ -30,9 +31,14 @@ public class RamRepository : IRamRepository
         return _db.ramMetrics.ToList();
     }
 
-    public IList<RamMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
+    IEnumerable<RamMetrics> IRepository<RamMetrics>.GetAll()
     {
-        _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
-        return _db.ramMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
+        throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<RamMetrics>> GetByRange(TimeSpan fromTime, TimeSpan toTime)
+    {
+        return await _db.ramMetrics.Where<RamMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToListAsync();
+
     }
 }

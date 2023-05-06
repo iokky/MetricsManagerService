@@ -1,7 +1,7 @@
 ﻿using MetricsAgent.DAL;
 using MetricsAgent.Logger;
 using MetricsAgent.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace MetricsAgent.Repositories.CpuRepository;
 
@@ -29,9 +29,14 @@ public class CpuMetricsRepository : ICpuMetricsRepository
         return _db.cpuMetrics.ToList();
     }
 
-    public IList<CpuMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
+    IEnumerable<CpuMetrics> IRepository<CpuMetrics>.GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<CpuMetrics>> GetByRange(TimeSpan fromTime, TimeSpan toTime)
     {
         _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
-        return _db.cpuMetrics.Where<CpuMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();       
+        return await _db.cpuMetrics.Where<CpuMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToListAsync();
     }
 }

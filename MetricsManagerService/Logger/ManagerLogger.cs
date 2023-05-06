@@ -1,6 +1,7 @@
-﻿using NLog;
+﻿using MetricsManagerService.Logger;
+using NLog;
 
-namespace MetricsAgent.Logger
+namespace MetricsManagerService.Logger
 {
     public class ManagerLogger : IManagerLogger
     {

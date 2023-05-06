@@ -73,10 +73,8 @@ internal class Program
         //Cpu
         builder.Services.AddTransient<CpuMetricsJob>();
         builder.Services.AddSingleton(new JobSchedule(typeof(CpuMetricsJob), "0/5 * * ? * * *"));
-        //DotNet
-        //builder.Services.AddTransient<DotNetMetricsJob>();
-        //builder.Services.AddSingleton(new JobSchedule(typeof(DotNetMetricsJob), "0/5 * * ? * * *"));
-                //Ram
+
+        //Ram
         builder.Services.AddTransient<RamMetricsJob>();
         builder.Services.AddSingleton(new JobSchedule(typeof(RamMetricsJob), "0/5 * * ? * * *"));
         //Hdd

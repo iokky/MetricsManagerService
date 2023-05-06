@@ -2,16 +2,19 @@
 using MetricsManagerService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace MetricsManagerService.Migrations
 {
-    [DbContext(typeof(ServiseDbContext))]
-    partial class ServiseDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ServiceAgentDbContext))]
+    [Migration("20230506154517_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");

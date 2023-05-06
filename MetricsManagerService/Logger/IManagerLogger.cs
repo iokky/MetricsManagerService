@@ -1,4 +1,4 @@
-﻿namespace MetricsAgent.Logger;
+﻿namespace MetricsManagerService.Logger;
 
 public interface IManagerLogger
 {

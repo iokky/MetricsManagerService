@@ -1,6 +1,7 @@
 ﻿using MetricsAgent.DAL;
 using MetricsAgent.Logger;
 using MetricsAgent.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MetricsAgent.Repositories.HddRepository
 {
@@ -22,17 +23,18 @@ namespace MetricsAgent.Repositories.HddRepository
             Task.CompletedTask.Wait();
 
         }
-
-        public IList<HddMetrics> GetAll()
+        public IEnumerable<HddMetrics> GetAll()
         {
             _logger?.LogDebug($"|{this}| Все записи метрик получены");
             return _db.hddMetrics.ToList();
         }
 
-        public IList<HddMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
+        public async Task<IEnumerable<HddMetrics>> GetByRange(TimeSpan fromTime, TimeSpan toTime)
         {
             _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
-            return _db.hddMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
+            return await _db.hddMetrics.Where<HddMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToListAsync();
         }
+
+
     }
 }

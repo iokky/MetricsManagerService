@@ -1,15 +1,20 @@
 ﻿using MetricsManagerService.CustomException;
 using MetricsManagerService.Models;
-using MetricsManagerService.Repositories;
+using Microsoft.EntityFrameworkCore;
 
-namespace MetricsManagerService.Services;
+namespace MetricsManagerService.Repositories;
 
-public class AgentsRepository: IAgentRepository
+public class AgentsRepository : IAgentRepository
 {
-    private readonly ServiseDbContext _db;
-    public AgentsRepository(ServiseDbContext db)
+    private readonly ServiceAgentDbContext _db;
+
+    public List<Agent> Agents { get; }
+
+
+    public AgentsRepository(ServiceAgentDbContext db)
     {
         _db = db;
+        Agents = _db.Agents.ToList();
     }
 
     public async Task Add(Agent agent)
@@ -18,7 +23,11 @@ public class AgentsRepository: IAgentRepository
         await _db.SaveChangesAsync();
     }
 
-    public IEnumerable<Agent> GetAll() => _db.Agents.ToArray();
+    public async Task<IEnumerable<Agent>> GetAll()
+    {
+        return await _db.Agents.ToListAsync();
+    }
+
 
     public Agent GetById(int id)
     {
@@ -40,4 +49,6 @@ public class AgentsRepository: IAgentRepository
             _db.Update(agent);
         }
     }
+
+ 
 }

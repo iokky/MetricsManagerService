@@ -24,10 +24,11 @@ public class HddController : ControllerBase
     }
 
     [HttpGet("left/from/{fromTime}/to/{toTime}")]
-    public IActionResult GetHddMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
+    public async Task<IActionResult> GetHddMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
+        var data = await _repository.GetByRange(fromTime, toTime);
         var response = new AllHddMetricsResponse() { 
-            HddMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+            HddMetrics = data.Select(i =>
                 _mapper.Map<HddMetricsDto>(i)
             ).ToList()
         };

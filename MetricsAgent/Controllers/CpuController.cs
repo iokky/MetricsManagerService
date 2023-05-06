@@ -25,10 +25,11 @@ public class CpuController : ControllerBase
 
 
     [HttpGet("from/{fromTime}/to/{toTime}")]
-    public IActionResult GetCpuMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
+    public async Task<IActionResult> GetCpuMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
+        var data = await _repository.GetByRange(fromTime, toTime);
         var response = new AllCpuMetricsResponse() { 
-            CpuMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+            CpuMetrics = data.Select(i =>
                 _mapper.Map<CpuMetricsDto>(i)
             ).ToList()
         };

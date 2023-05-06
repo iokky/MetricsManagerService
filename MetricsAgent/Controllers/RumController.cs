@@ -24,10 +24,11 @@ public class RamController : ControllerBase
     }
 
     [HttpGet("available/from/{fromTime}/to/{toTime}")]
-    public IActionResult GetRamMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
+    public async Task<IActionResult> GetRamMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
+        var data = await _repository.GetByRange(fromTime, toTime);
         var response = new AllRamMetricsResponse() { 
-            RamMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+            RamMetrics = data.Select(i =>
                 _mapper.Map<RamMetricsDto>(i)
             ).ToList()
         };

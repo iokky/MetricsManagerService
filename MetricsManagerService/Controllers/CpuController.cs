@@ -1,6 +1,9 @@
-﻿using MetricsManagerService.Models;
+﻿using AutoMapper;
+using MetricsManagerService.Models;
+using MetricsManagerService.Models.Dto;
 using MetricsManagerService.Models.Requests;
 using MetricsManagerService.Repositories;
+using MetricsManagerService.Repositories.CPU;
 using MetricsManagerService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -15,26 +18,34 @@ namespace MetricsManagerService.Controllers;
 [ApiController]
 public class CpuController : ControllerBase
 {
-    private readonly IAgentRepository _repository;
+    private readonly IAgentRepository _agentRepository;
     private readonly IMerticsAgentClient _agentClient;
+
+    private readonly ICpuMetricsRepository _cpuMetricsRepository;
+    private readonly IMapper _mapper;
     
 
-    public CpuController(IAgentRepository repository, IMerticsAgentClient agentClient)
+    public CpuController(IAgentRepository agentRepository, 
+        IMerticsAgentClient agentClient,
+        ICpuMetricsRepository cpuMetricsRepository,
+        IMapper mapper)
     {
-        _repository = repository;
-        _agentClient = agentClient;
+        _agentRepository = agentRepository;
+        _cpuMetricsRepository = cpuMetricsRepository;
+        _mapper = mapper;
     }
 
     [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
     public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
-     
-        return Ok(_agentClient.GetCpuMetrics(new CpuMetricsRequest()
+        var response = new CpuMetricsResponse()
         {
-            AgentId = agentId,
-            FromTime = fromTime,
-            ToTime = toTime
-        }));
+            CpuMetrics = _cpuMetricsRepository.GetByRange(agentId, fromTime, toTime).Select(i =>
+            _mapper.Map<CpuMetricsDto>(i)).ToArray(),
+
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
@@ -43,8 +54,14 @@ public class CpuController : ControllerBase
     [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
     public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
+        var response = new CpuMetricsResponse() 
+        {
+            CpuMetrics = _cpuMetricsRepository.GetAllByRange(fromTime, toTime).Select(i =>
+            _mapper.Map<CpuMetricsDto>(i)).ToArray(),
 
-        return Ok();
+        };
+
+        return Ok(response);
     }
 
 }

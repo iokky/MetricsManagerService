@@ -1,6 +1,7 @@
 ﻿using MetricsAgent.DAL;
 using MetricsAgent.Logger;
 using MetricsAgent.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MetricsAgent.Repositories.NetworkRepository;
 
@@ -28,9 +29,15 @@ public class NetworkRepository : INetworkRepository
         return _db.networkMetrics.ToList();
     }
 
-    public IList<NetworkMetrics> GetByRange(TimeSpan fromTime, TimeSpan toTime)
+    IEnumerable<NetworkMetrics> IRepository<NetworkMetrics>.GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<NetworkMetrics>> GetByRange(TimeSpan fromTime, TimeSpan toTime)
     {
         _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
-        return _db.networkMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
+        return await _db.networkMetrics.Where<NetworkMetrics>(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToListAsync();
+
     }
 }

@@ -34,5 +34,15 @@ namespace MetricsAgent.Repositories.DotNetRepository
             _logger?.LogDebug($"|{this}| Записи метрик с {fromTime} оп {toTime} получены");
             return _db.dotNetMetrics.Where(i => i.Time >= fromTime.TotalSeconds && i.Time <= toTime.TotalSeconds).ToList();
         }
+
+        IEnumerable<DotNetMetrics> IRepository<DotNetMetrics>.GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<DotNetMetrics>> IRepository<DotNetMetrics>.GetByRange(TimeSpan fromTime, TimeSpan toTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

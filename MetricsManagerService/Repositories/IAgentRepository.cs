@@ -3,6 +3,6 @@
 namespace MetricsManagerService.Repositories;
 
 public interface IAgentRepository: IRepository<Agent>
-{ 
- 
+{
+    public List<Agent> Agents { get; }
 }

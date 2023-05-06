@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MetricsAgent.Logger;
-using MetricsAgent.Models;
 using MetricsAgent.Models.Dto;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Repositories.NetworkRepository;
@@ -26,10 +25,11 @@ public class NetworkController : ControllerBase
     }
 
     [HttpGet("from/{fromTime}/to/{toTime}")]
-    public IActionResult GetNetworkMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+    public async Task<IActionResult> GetNetworkMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
     {
+        var data = await _repository.GetByRange(fromTime, toTime);
         var response = new AllNetworkMetricsResponse() { 
-            NetworkMetrics = _repository.GetByRange(fromTime, toTime).Select(i =>
+            NetworkMetrics = data.Select(i =>
                 _mapper.Map<NetworkMetricsDto>(i)
             ).ToList()
         };

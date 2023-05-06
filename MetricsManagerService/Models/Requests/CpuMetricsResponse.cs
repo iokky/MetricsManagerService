@@ -1,8 +1,12 @@
-﻿namespace MetricsManagerService.Models.Requests
+﻿using MetricsManagerService.Models.Dto;
+
+namespace MetricsManagerService.Models.Requests
 {
     public class CpuMetricsResponse
     {
-        public int AgentId { get; set; }  
-        public CpuMetric[]? CpuMetrics { get; set; }
+        // Отображение id перенесено в модельметрики
+        //public int AgentId { get; set; }  
+
+        public CpuMetricsDto[]? CpuMetrics { get; set; }
     }
 }

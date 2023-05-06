@@ -28,7 +28,7 @@ public class DotNetController : ControllerBase
     public IActionResult GetDotNetMetric([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
     {
         var response = new AllDotNetMetricsResponse() { 
-            DotNetMetrics = _repository.GetByRange(fromTime, toTime).Select(i => 
+            DotNetMetrics = _repository.GetByRange(fromTime, toTime).Result.Select(i => 
                     _mapper.Map<DotNetMetricsDto>(i)
                 ).ToList()
         };
