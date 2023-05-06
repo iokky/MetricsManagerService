@@ -18,19 +18,14 @@ namespace MetricsManagerService.Controllers;
 [ApiController]
 public class CpuController : ControllerBase
 {
-    private readonly IAgentRepository _agentRepository;
-    private readonly IMerticsAgentClient _agentClient;
-
     private readonly ICpuMetricsRepository _cpuMetricsRepository;
     private readonly IMapper _mapper;
     
 
-    public CpuController(IAgentRepository agentRepository, 
-        IMerticsAgentClient agentClient,
+    public CpuController(
         ICpuMetricsRepository cpuMetricsRepository,
         IMapper mapper)
     {
-        _agentRepository = agentRepository;
         _cpuMetricsRepository = cpuMetricsRepository;
         _mapper = mapper;
     }
