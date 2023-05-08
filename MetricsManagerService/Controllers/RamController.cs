@@ -3,7 +3,6 @@ using MetricsManagerService.Logger;
 using MetricsManagerService.Models.Dto;
 using MetricsManagerService.Models.Requests;
 using MetricsManagerService.Repositories.Ram;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerService.Controllers;
@@ -35,7 +34,7 @@ public class RamController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("cluster/available")]
+    [HttpGet("cluster/available/from/{fromTime}/to/{toTime}")]
     public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime) 
     {
         var response = new RamMetricsResponse()

@@ -34,7 +34,7 @@ namespace MetricsManagerService.Controllers
             return Ok(response);
         }
 
-        [HttpGet("cluster/left")]
+        [HttpGet("cluster/left/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             var response = new HddMetricsResponse()

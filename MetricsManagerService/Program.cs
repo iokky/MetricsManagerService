@@ -14,6 +14,9 @@ using MetricsManagerService.Repositories.CPU;
 using MetricsManagerService.Repositories.Hdd;
 using MetricsManagerService.Repositories.Network;
 using MetricsManagerService.Repositories.Ram;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,13 +33,35 @@ builder.Services.AddTransient<IManagerLogger, ManagerLogger>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-    options.MapType<TimeSpan>(() => new Microsoft.OpenApi.Models.OpenApiSchema
+builder.Services.AddSwaggerGen(options => 
+{
+    options.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "MetricsMagagerSerice",
+        Description = "Endpoind Our metrics",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Version="v1",
+        Contact = new OpenApiContact 
+        {
+            Name = "Anton",
+            Email = "domeniqueflo@gmail.com"
+        }
+    });
+
+    options.MapType<TimeSpan>(() => new OpenApiSchema
     {
         Type = "string",
         Example = new OpenApiString("00:00:00")
-    })
-);
+    });
+
+    // Add ApiDoc File in Root Dir
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+
+    options.EnableAnnotations(); // Enable Ananation Flagss for Swashbuckle.AspNetCore.Annotations (use for controller anotation)
+
+});
 
 /*Add Db Context*/
 //Metrics

@@ -1,6 +1,6 @@
 ﻿using MetricsAgent.Repositories.RamRepository;
 using Quartz;
-using Quartz.Spi;
+using MetricsAgent.Models;
 using System.Diagnostics;
 
 namespace MetricsAgent.Jobs;
@@ -8,20 +8,20 @@ namespace MetricsAgent.Jobs;
 public class RamMetricsJob : IJob
 {
     private readonly IRamRepository _repository;
-    private readonly PerformanceCounter _cpuCounter;
+    private readonly PerformanceCounter _ramCounter;
 
     public RamMetricsJob(IRamRepository repository)
     {
         _repository = repository;
-        _cpuCounter = new PerformanceCounter("Memory", "Available MBytes");
+        _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
     }
     [STAThread]
     public Task Execute(IJobExecutionContext context)
     {
-        _cpuCounter.NextValue();
+        _ramCounter.NextValue();
         Thread.Sleep(250);
-        var value = _cpuCounter.NextValue();
-        _repository.Create(new Models.RamMetrics()
+        var value = _ramCounter.NextValue();
+        _repository.Create(new RamMetrics()
         {
             Id = Guid.NewGuid(),
             Value = (int)value,

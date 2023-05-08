@@ -8,5 +8,6 @@ namespace MetricsManagerService.Models
         public int Value { get; set; }
         public double Time { get; set; }       
         public int AgentId { get; set; }
+        public Guid MetricId { get; set; }
     }
 }

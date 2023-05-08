@@ -23,15 +23,11 @@ public class CpuMetricsRepository : ICpuMetricsRepository
         Task.CompletedTask.Wait();
     }
 
-    public IList<CpuMetrics> GetAll()
+
+    public IEnumerable<CpuMetrics> GetAll()
     {
         _logger?.LogDebug($"|{this}| Все записи метрик получены");
         return _db.cpuMetrics.ToList();
-    }
-
-    IEnumerable<CpuMetrics> IRepository<CpuMetrics>.GetAll()
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<CpuMetrics>> GetByRange(TimeSpan fromTime, TimeSpan toTime)

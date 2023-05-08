@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
-using MetricsManagerService.Models;
+using MetricsManagerService.Logger;
 using MetricsManagerService.Models.Dto;
 using MetricsManagerService.Models.Requests;
-using MetricsManagerService.Repositories;
 using MetricsManagerService.Repositories.CPU;
-using MetricsManagerService.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace MetricsManagerService.Controllers;
 
@@ -20,14 +13,17 @@ public class CpuController : ControllerBase
 {
     private readonly ICpuMetricsRepository _cpuMetricsRepository;
     private readonly IMapper _mapper;
-    
+    private readonly IManagerLogger _logger;
+
 
     public CpuController(
         ICpuMetricsRepository cpuMetricsRepository,
-        IMapper mapper)
+        IMapper mapper,
+        IManagerLogger logger)
     {
         _cpuMetricsRepository = cpuMetricsRepository;
         _mapper = mapper;
+        _logger = logger;
     }
 
     [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]

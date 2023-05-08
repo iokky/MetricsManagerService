@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.Repositories.NetworkRepository;
+using MetricsAgent.Models;
 using Quartz;
 using System.Diagnostics;
 
@@ -23,7 +24,7 @@ public class NetworkMetricsJob : IJob
         _netCounter.NextValue();
         Thread.Sleep(200);
         var value = _netCounter.NextValue();
-        _repository.Create(new Models.NetworkMetrics()
+        _repository.Create(new NetworkMetrics()
         {
             Id = Guid.NewGuid(),
             Value = (int)value,
